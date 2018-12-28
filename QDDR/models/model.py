@@ -61,9 +61,9 @@ class model_ensemble(nn.Module):
             state_dict[key] = pretrain_state_dict[key]
 
         self.load_state_dict(state_dict)
-    def getLoss(self, target, result, loss_function=nn.CrossEntropyLoss()):
+    def getLoss(self, result, target, loss_function=nn.CrossEntropyLoss()):
         # self.loss = nn.CrossEntropyLoss()(target, result.long())
-        self.loss = loss_function(target, result.long())
+        self.loss = loss_function(result, target.long())
 class model_QDDR(nn.Module):
     def __init__(self, num_classes=340, get_feature=False, inchannels=3,model_name='resnet34'):
         super().__init__()
@@ -100,9 +100,9 @@ class model_QDDR(nn.Module):
         x = data_parallel(self.basemodel, x)
         return x
 
-    def getLoss(self, target, result, loss_function=nn.CrossEntropyLoss()):
+    def getLoss(self,  result, target, loss_function=nn.CrossEntropyLoss()):
         # self.loss = nn.CrossEntropyLoss()(target, result.long())
-        self.loss = loss_function(target, result.long())
+        self.loss = loss_function(result, target.long())
 
     def mean_teacher_loss(self, outs_student, outs_teacher, recognized, labels, con_weight=1):
         b = len(recognized)
